@@ -31,3 +31,6 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+    def matches_played(self):
+        return self.player.matches_won + self.player.matches_lost

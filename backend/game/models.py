@@ -10,7 +10,6 @@ from django.utils import timezone
 # for displaying games in admin panel
 
 from django.contrib import admin
-
 from users.models import Profile
 
 # create game when starting a new game
@@ -21,11 +20,18 @@ class Game(models.Model):
     score1 = models.IntegerField(default=0)
     score2 = models.IntegerField(default=0)
     # calculate duration of game from start to finish
-    started_at = models.DateTimeField("date started")
-    played_at = models.DateTimeField("date finished")
+    started_at = models.DateTimeField(default=timezone.now)
+    played_at = models.DateTimeField(default=timezone.now)
+    pending = models.BooleanField(default=True)
+
+    player1_ready = models.BooleanField(default=False)
+    player2_ready = models.BooleanField(default=False)
+
     # obtain from each player the User object and display its username
     def __str__(self):
         return f"{self.player1} vs {self.player2} ({self.score1}-{self.score2})"
+
+    #For displaying in admin page
     @admin.display(
         boolean=True,
         ordering="played_at",
@@ -34,8 +40,6 @@ class Game(models.Model):
     def was_played_recently(self):
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.played_at <= now
-    def start(self):
-        self.started_at = timezone.now()
     def end(self):
         self.played_at = timezone.now()
         if self.score1 > self.score2:
