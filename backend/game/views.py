@@ -7,7 +7,6 @@ from .models import Game, Dashboard, Player
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
-
 # show recent games for now
 @login_required
 def recent_games(request):
@@ -21,18 +20,18 @@ def recent_games(request):
 					if opp != this_user:
 						user_profile = Profile.objects.get(user=this_user)
 						opp_profile = Profile.objects.get(user=opp)
-						game = Game.objects.create(player1=user_profile.player, player2=opp_profile.player)
+						game = Game.objects.create(player1=user_profile, player2=opp_profile)
 						game.save()
 						return redirect('game:new_game', game_id=game.id)
 					else:
 						print("You cannot play against yourself.")
-						return render(request, "game/base.html", {"error_message": "You cannot play against yourself."})
+						return render(request, "game/recent_games.html", {"error_message": "You cannot play against yourself."})
 				else:
 					print("Invalid Username")
-					return render(request, "game/base.html", {"error_message": "Invalid opponent username."})
+					return render(request, "game/recent_games.html", {"error_message": "Invalid opponent username."})
 			else:
 				print("No Input")
-				return render(request, "game/base.html", {"error_message": "Please enter an opponent username."})
+				return render(request, "game/recent_games.html", {"error_message": "Please enter an opponent username."})
 		if 'player2_enter_game' in request.POST:
 			game_id = request.POST.get('player2_enter_game')
 			game = Game.objects.get(id=game_id)
