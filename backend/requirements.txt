@@ -6,3 +6,5 @@ crispy-bootstrap4
 django-crispy-forms
 channels
 daphne
+djangorestframework
+requests
